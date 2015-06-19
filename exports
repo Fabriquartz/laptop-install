@@ -1,0 +1,3 @@
+# use sublime text as editor
+export VISUAL=subl
+export EDITOR=$VISUAL
