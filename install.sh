@@ -75,7 +75,7 @@ echo "Creating folder ~/Project/Fabriquartz"
 mkdir -pv ~/Projects/Fabriquartz
 
 echo "Generating SSH key"
-if [-f ~/.ssh/id_rsa ]
+if [ -f ~/.ssh/id_rsa ]
 then
   echo "SSH key detected, skipping"
 else
@@ -88,7 +88,7 @@ cat ~/.ssh/id_rsa | pbcopy
 echo ""
 
 echo "Setup up git config"
-if [-f ~/.gitconfig ]
+if [ -f ~/.gitconfig ]
 then
   echo "Gitconfig detected, skipping"
 else
@@ -99,28 +99,28 @@ else
 fi
 
 echo "Setting up dotfiles"
-if [-f ~/.bash_profile ]
+if [ -f ~/.bash_profile ]
 then
   echo "Bash Profile detected, backing up"
   mv ~/.bash_profile ~/.bash_profile.backup
 fi
 cp aliases ~/.aliases
 
-if [-f ~/.aliases ]
+if [ -f ~/.aliases ]
 then
   echo "Aliases detected, skipping"
 else
   cp aliases ~/.aliases
 fi
 
-if [-f ~/.exports ]
+if [ -f ~/.exports ]
 then
   echo "Exports detected, skipping"
 else
   cp exports ~/.exports
 fi
 
-if [-f ~/.editorconfig ]
+if [ -f ~/.editorconfig ]
 then
   echo "editorconfig detected, skipping"
 else
