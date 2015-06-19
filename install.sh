@@ -92,7 +92,7 @@ if [ -f ~/.gitconfig ]
 then
   echo "Gitconfig detected, skipping"
 else
- cp gitconfig ~/.gitconfig
+ cp -v gitconfig ~/.gitconfig
 
  git config --global user.name "$full_name"
  git config --global user.email "$email_address"
@@ -104,27 +104,27 @@ then
   echo "Bash Profile detected, backing up"
   mv ~/.bash_profile ~/.bash_profile.backup
 fi
-cp aliases ~/.aliases
+cp bash_profile ~/.bash_profile
 
 if [ -f ~/.aliases ]
 then
   echo "Aliases detected, skipping"
 else
-  cp aliases ~/.aliases
+  cp -v aliases ~/.aliases
 fi
 
 if [ -f ~/.exports ]
 then
   echo "Exports detected, skipping"
 else
-  cp exports ~/.exports
+  cp -v exports ~/.exports
 fi
 
 if [ -f ~/.editorconfig ]
 then
   echo "editorconfig detected, skipping"
 else
-  cp editorconfig ~/.editorconfig
+  cp -v editorconfig ~/.editorconfig
 fi
 
 echo "Installing the Ruby version manager"
