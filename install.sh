@@ -11,6 +11,9 @@ echo ""
 echo "Press any key to start the installation process, press <CTRL + C> to cancel"
 read
 
+echo "We need your sudo password to do a few things"
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 echo "Installing Brew"
 if ! command -v brew >/dev/null; then
@@ -72,7 +75,7 @@ echo "Creating folder ~/Project/Fabriquartz"
 mkdir -pv ~/Projects/Fabriquartz
 
 echo "Generating SSH key"
-if [-e ~/.ssh/id_rsa ]
+if [-f ~/.ssh/id_rsa ]
 then
   echo "SSH key detected, skipping"
 else
@@ -85,7 +88,7 @@ cat ~/.ssh/id_rsa | pbcopy
 echo ""
 
 echo "Setup up git config"
-if [-e ~/.gitconfig ]
+if [-f ~/.gitconfig ]
 then
   echo "Gitconfig detected, skipping"
 else
@@ -96,28 +99,28 @@ else
 fi
 
 echo "Setting up dotfiles"
-if [-e ~/.bash_profile ]
+if [-f ~/.bash_profile ]
 then
   echo "Bash Profile detected, backing up"
   mv ~/.bash_profile ~/.bash_profile.backup
 fi
 cp aliases ~/.aliases
 
-if [-e ~/.aliases ]
+if [-f ~/.aliases ]
 then
   echo "Aliases detected, skipping"
 else
   cp aliases ~/.aliases
 fi
 
-if [-e ~/.exports ]
+if [-f ~/.exports ]
 then
   echo "Exports detected, skipping"
 else
   cp exports ~/.exports
 fi
 
-if [-e ~/.editorconfig ]
+if [-f ~/.editorconfig ]
 then
   echo "editorconfig detected, skipping"
 else
