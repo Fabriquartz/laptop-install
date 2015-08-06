@@ -127,6 +127,13 @@ else
   cp -v editorconfig ~/.editorconfig
 fi
 
+if [ -f ~/.vimrc ]
+then
+  echo "vimrc detected, skipping"
+else
+  cp -v vimrc ~/.vimrc
+fi
+
 echo "Installing the Ruby version manager"
 if ! command -v rvm >/dev/null; then
   \curl -sSL https://get.rvm.io | bash -s stable --ruby
