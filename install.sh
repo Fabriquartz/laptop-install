@@ -19,6 +19,9 @@ echo "Installing Brew"
 if ! command -v brew >/dev/null; then
   curl -fsS \
     'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
+else
+  brew update
+  brew upgrade
 fi
 
 echo "Installing improved unix tools"
