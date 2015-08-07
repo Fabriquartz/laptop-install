@@ -113,7 +113,7 @@ else
   cp -v aliases ~/.aliases
 fi
 
-if [ -f ~/.aliases ]
+if [ -f ~/.bash_prompt ]
 then
   echo "Bash prompt detected, skipping"
 else
