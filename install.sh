@@ -113,6 +113,13 @@ else
   cp -v aliases ~/.aliases
 fi
 
+if [ -f ~/.aliases ]
+then
+  echo "Bash prompt detected, skipping"
+else
+  cp -v bash_prompt ~/.bash_prompt
+fi
+
 if [ -f ~/.exports ]
 then
   echo "Exports detected, skipping"
