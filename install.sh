@@ -63,7 +63,7 @@ brew cask install harvest
 
 brew cleanup
 
-npm install npm -g; npm update -g
+npm install npm@^2 -g; npm update -g
 
 echo "Installing Bower"
 npm install -g bower
@@ -73,6 +73,9 @@ npm install -g phantomjs
 
 echo "Installing Ember CLI"
 npm install -g ember-cli
+
+echo "Installing NomBom"
+npm instaal -g nombom
 
 echo "Creating folder ~/Project/Fabriquartz"
 mkdir -pv ~/Projects/Fabriquartz
@@ -153,6 +156,9 @@ else
 fi
 
 source ~/.rvm/scripts/rvm
+
+echo "Installing vim plugins"
+vim +NeoBundleInstall +qall
 
 sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
 chsh -s /usr/local/bin/bash
