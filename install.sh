@@ -170,8 +170,12 @@ source ~/.rvm/scripts/rvm
 echo "Installing vim plugins"
 vim +NeoBundleInstall +qall
 
+echo "Changing system Bash to newer Brew Bash"
+echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
 sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
 chsh -s /usr/local/bin/bash
+
+echo "Reloading shell"
 exec $SHELL -l
 
 echo "Aaaaand were done!"
