@@ -42,6 +42,8 @@ brew install the_silver_searcher
 brew install openssl
 brew unlink openssl && brew link openssl --force
 
+brew install watchman
+
 echo "Installing Node.js"
 brew install node
 
