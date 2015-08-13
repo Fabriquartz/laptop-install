@@ -106,6 +106,14 @@ else
  git config --global user.email "$email_address"
 fi
 
+echo "Setting up gitignore"
+if [ -f ~/.gitignore ]
+then
+  echo "Gitignore detected, skipping"
+else
+ cp -v gitignore ~/.gitignore
+fi
+
 echo "Setting up dotfiles"
 if [ -f ~/.bash_profile ]
 then
