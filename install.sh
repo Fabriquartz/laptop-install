@@ -77,7 +77,7 @@ echo "Installing Ember CLI"
 npm install -g ember-cli
 
 echo "Installing NomBom"
-npm instaal -g nombom
+npm install -g nombom
 
 echo "Creating folder ~/Project/Fabriquartz"
 mkdir -pv ~/Projects/Fabriquartz
