@@ -62,6 +62,9 @@ echo "Installing Slack"
 brew cask install slack
 echo "Installing Harvest"
 brew cask install harvest
+echo "Installing Virtualbox and Vagrant"
+brew cask install virtualbox
+brew cask install vagrant
 
 brew cleanup
 
