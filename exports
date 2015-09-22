@@ -1,3 +1,11 @@
 # use sublime text as editor
 export VISUAL=vim
 export EDITOR=$VISUAL
+
+# Prefer US English and use UTF-8.
+export LANG='en_US.UTF-8';
+export LC_ALL='en_US.UTF-8';
+
+# Oracle instantclient
+DYLD_LIBRARY_PATH=/opt/oracle/instantclient_11_2
+export DYLD_LIBRARY_PATH
