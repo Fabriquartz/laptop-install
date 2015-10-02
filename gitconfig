@@ -33,6 +33,7 @@
   m = merge
   mm = merge --no-ff
 
+  ri = rebase --interactive
   rc = rebase --continue
   rs = rebase --skip
   ra = rebase --abort
