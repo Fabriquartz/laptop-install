@@ -9,3 +9,5 @@ export LC_ALL='en_US.UTF-8';
 # Oracle instantclient
 DYLD_LIBRARY_PATH=/opt/oracle/instantclient_11_2
 export DYLD_LIBRARY_PATH
+
+[[ -f ~/.exports.local ]] && source ~/.exports.local

@@ -1,184 +1,187 @@
+fancy_echo() {
+  local fmt="$1"; shift
+
+  # shellcheck disable=SC2059
+  printf "$fmt\n" "$@"
+}
+
+fancy_echo "This script will setup your laptop"
+printf "\n"
+
 # Get name and email
-echo "This script will setup your laptop"
-echo ""
-echo "Before we start we need some basic details of you"
-echo ""
+fancy_echo "Before we start we need some basic details of you"
 read -p "What is your full name? (e.g. Johny Appleseed): " full_name
 read -p "What is your email address? (e.g. johny.appleseed@fabriquartz.com): " email_address
-echo ""
-echo "Hello $full_name <$email_address>"
-echo ""
-echo "Press any key to start the installation process, press <CTRL + C> to cancel"
+printf "\n"
+
+fancy_echo "Hello $full_name <$email_address>"
+printf "\n"
+
+fancy_echo "Press any key to start the installation process, press <CTRL + C> to cancel"
 read
 
-echo "We need your sudo password to do a few things"
+fancy_echo "We need your sudo password to do a few things"
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-echo "Installing Brew"
 if ! command -v brew >/dev/null; then
+  fancy_echo "Installing Brew"
   curl -fsS \
     'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
 else
-  brew update
-  brew upgrade
+  fancy_echo "Updating Brew ..."
+  brew update >> out.log
 fi
 
-echo "Installing improved unix tools"
-brew install wget
-brew install coreutils
-brew install moreutils
-brew install findutils
+printf "\n"
+fancy_echo "Installing Brew formulas!"
+printf "\n"
 
-brew install bash
+brew_install() {
+  if brew list -1 | grep -Fqx "$1"; then
+    if ! brew outdated --quiet "$1" >/dev/null; then
+      fancy_echo "Upgrading %s" "$1"
+      brew upgrade "$@" >> out.log 2>&1
+    else
+      fancy_echo "Already installed %s" "$1"
+    fi
+  else
+    fancy_echo "Installing %s ..." "$1"
+    brew install "$@" >> out.log 2>&1
+  fi
+}
 
-brew tap homebrew/versions
-brew install bash-completion2
+brew_cask_install() {
+  if brew cask list -1 | grep -Fqx "$1"; then
+    fancy_echo "Already installed %s" "$1"
+  else
+    fancy_echo "Installing %s ..." "$1"
+    brew cask install "$@" >> out.log 2>&1
+  fi
+}
 
-brew install git
-brew install vim
-brew install the_silver_searcher
+brew_install 'wget'
+brew_install 'coreutils'
+brew_install 'moreutils'
+brew_install 'findutils'
+brew_install 'bash'
+brew_install 'bash-completion2'
+brew_install 'git'
+brew_install 'vim'
+brew_install 'the_silver_searcher'
+brew_install 'watchman'
+brew_install 'node'
+brew_install 'hub'
+brew_install 'elixir'
+brew_install 'postgresql'
+brew_install 'redis'
+brew_install 'ctags'
+brew_install 'libyaml'
 
-brew install openssl
-brew unlink openssl && brew link openssl --force
+brew_install 'openssl'
+brew unlink openssl       >> out.log 2>&1
+brew link openssl --force >> out.log 2>&1
 
-brew install watchman
+printf "\n"
+brew tap homebrew/versions >> out.log 2>&1
+brew_install 'caskroom/cask/brew-cask'
 
-echo "Installing Node.js"
-brew install node
+brew_cask_install 'google-chrome'
+brew_cask_install 'atom'
+brew_cask_install 'dash'
+brew_cask_install 'slack'
+brew_cask_install 'alfred'
+brew_cask_install 'harvest'
+brew_cask_install 'virtualbox'
+brew_cask_install 'vagrant'
 
-echo "Installing Brew Cask"
-brew install caskroom/cask/brew-cask
+fancy_echo "Updating misc Brew packages (if any)"
+brew upgrade >> out.log 2>&1
 
-echo "Installing Google Chrome"
-brew cask install google-chrome
-echo "Installing Sublime Text"
-brew cask install sublime-text
-echo "Installing Dash"
-brew cask install dash
-echo "Installing Alfred"
-brew cask install alfred
-echo "Installing Slack"
-brew cask install slack
-echo "Installing Harvest"
-brew cask install harvest
-echo "Installing Virtualbox and Vagrant"
-brew cask install virtualbox
-brew cask install vagrant
+fancy_echo "Cleaning up all the Brew spills"
+brew cleanup >> out.log 2>&1
+brew cask cleanup >> out.log 2>&1
 
-brew cleanup
+npm_install() {
+  fancy_echo "Installing %s ..." "$1"
+  npm install -g "$@" >> out.log 2>&1
+}
 
-npm install npm@^2 -g; npm update -g
+fancy_echo "\nInstalling NPM packages"
+npm_install 'npm'
+npm_install 'bower'
+npm_install 'phantomjs'
+npm_install 'ember-cli'
+npm_install 'nombom'
 
-echo "Installing Bower"
-npm install -g bower
+fancy_echo "\nCreating folder ~/Project/Fabriquartz"
+mkdir -p ~/Projects/Fabriquartz
 
-echo "Installing PhantomJs"
-npm install -g phantomjs
-
-echo "Installing Ember CLI"
-npm install -g ember-cli
-
-echo "Installing NomBom"
-npm install -g nombom
-
-echo "Creating folder ~/Project/Fabriquartz"
-mkdir -pv ~/Projects/Fabriquartz
-
-echo "Generating SSH key"
+printf "\n"
 if [ -f ~/.ssh/id_rsa ]
 then
-  echo "SSH key detected, skipping"
+  fancy_echo "Skipping SSH key generation, you already have one"
 else
+  fancy_echo "Generating SSH key"
   ssh-keygen -q -t rsa -b 4096 -C "$email_address" -N "" -f ~/.ssh/id_rsa
 fi
 
-echo "Copying public key to clipboard, please add it to your Github account"
-cat ~/.ssh/id_rsa | pbcopy
+cat ~/.ssh/id_rsa.pub | pbcopy
+fancy_echo "Copyied public key to clipboard, please add it to your Github account.  Press any key to continue"
+read
 
-echo ""
+copy_dotfile() {
+  if [ -f ~/.${1} ]
+  then
+    fancy_echo "%s already exists, backing up" "$1"
+    mv ~/.${1} ~/.${1}.backup$(date +%s)
+  fi
 
-echo "Setup up git config"
-if [ -f ~/.gitconfig ]
-then
-  echo "Gitconfig detected, skipping"
-else
- cp -v gitconfig ~/.gitconfig
+  fancy_echo "Copying %s" "$1"
+  cp ./${1} ~/.${1}
+}
 
- git config --global user.name "$full_name"
- git config --global user.email "$email_address"
-fi
+printf "\n"
+fancy_echo "Copying dotfiles!"
+copy_dotfile "aliases"
+copy_dotfile "agignore"
+copy_dotfile "bash_profile"
+copy_dotfile "bashrc"
+copy_dotfile "bash_prompt"
+copy_dotfile "exports"
+copy_dotfile "editorconfig"
+copy_dotfile "gitconfig"
+copy_dotfile "gitignore"
+copy_dotfile "vimrc"
 
-echo "Setting up gitignore"
-if [ -f ~/.gitignore ]
-then
-  echo "Gitignore detected, skipping"
-else
- cp -v gitignore ~/.gitignore
-fi
+printf "\n"
+fancy_echo "Configuring name and email in gitconfig"
+git config --global user.name "$full_name"
+git config --global user.email "$email_address"
 
-echo "Setting up dotfiles"
-if [ -f ~/.bash_profile ]
-then
-  echo "Bash Profile detected, backing up"
-  mv ~/.bash_profile ~/.bash_profile.backup
-fi
-cp bash_profile ~/.bash_profile
-
-if [ -f ~/.aliases ]
-then
-  echo "Aliases detected, skipping"
-else
-  cp -v aliases ~/.aliases
-fi
-
-if [ -f ~/.bash_prompt ]
-then
-  echo "Bash prompt detected, skipping"
-else
-  cp -v bash_prompt ~/.bash_prompt
-fi
-
-if [ -f ~/.exports ]
-then
-  echo "Exports detected, skipping"
-else
-  cp -v exports ~/.exports
-fi
-
-if [ -f ~/.editorconfig ]
-then
-  echo "editorconfig detected, skipping"
-else
-  cp -v editorconfig ~/.editorconfig
-fi
-
-if [ -f ~/.vimrc ]
-then
-  echo "vimrc detected, skipping"
-else
-  cp -v vimrc ~/.vimrc
-fi
-
-echo "Installing the Ruby version manager"
+printf "\n"
 if ! command -v rvm >/dev/null; then
-  \curl -sSL https://get.rvm.io | bash -s stable --ruby
+  fancy_echo "Installing the Ruby version manager"
+  \curl -sSL https://get.rvm.io | bash -s stable --ruby >> out.log 2>&1
 else
-  rvm get stable
-  rvm reload
+  fancy_echo "Updating the Ruby version manager"
+  rvm get stable >> out.log 2>&1
+  rvm reload >> out.log 2>&1
 fi
 
-source ~/.rvm/scripts/rvm
+source ~/.rvm/scripts/rvm >> out.log 2>&1
 
-echo "Installing vim plugins"
+printf "\n"
+fancy_echo "Installing vim plugins"
 vim +NeoBundleInstall +qall
 
-echo "Changing system Bash to newer Brew Bash"
-echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
+printf "\n"
+fancy_echo "Changing system Bash to newer Brew Bash"
+fancy_echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
 sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
 chsh -s /usr/local/bin/bash
 
-echo "Reloading shell"
+fancy_echo "\nReloading shell"
 exec $SHELL -l
 
-echo "Aaaaand were done!"
+fancy_echo "\n\n\nDone!"

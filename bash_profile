@@ -27,3 +27,5 @@ fi
 
 # Load RVM
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+[[ -f ~/.bash_profile.local ]] && source ~/.bash_profile.local

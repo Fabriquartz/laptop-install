@@ -15,24 +15,27 @@ call neobundle#begin(expand($HOME.'/.vim/bundle'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/neocomplcache.vim'
 NeoBundle 'bkad/CamelCaseMotion'
-NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'bling/vim-airline'
 NeoBundle 'croaky/vim-colors-github'
 NeoBundle 'ctrlpvim/ctrlp.vim'
+NeoBundle 'elixir-lang/vim-elixir'
 NeoBundle 'flazz/vim-colorschemes'
+NeoBundle 'mustache/vim-mustache-handlebars'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'pbrisbin/vim-mkdir'
+NeoBundle 'rust-lang/rust.vim'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'scrooloose/syntastic'
-NeoBundle 'pangloss/vim-javascript'
-NeoBundle 'ctrlpvim/ctrlp.vim'
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'pbrisbin/vim-mkdir'
+NeoBundle 'thoughtbot/vim-rspec'
 NeoBundle 'tpope/vim-rails'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-dispatch'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-unimpaired'
 NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'vim-scripts/tComment'
-NeoBundle 'mustache/vim-mustache-handlebars'
-NeoBundle 'rust-lang/rust.vim'
 call neobundle#end()
 
 filetype  plugin on
@@ -53,6 +56,7 @@ set noswapfile                         " Ain't nobody got time for swap files
 set noerrorbells                       " Don't beep
 set nowrap                             " Do not wrap lines
 set nowritebackup
+set noshowmode
 set number                             " Show line numbers
 set numberwidth=5                      " Make line number gutter at least 5 chars wide
 set popt=left:8pc,right:3pc            " Print options
@@ -71,7 +75,8 @@ set wildmenu                           " Command-line completion in an enhanced 
 set shell=bash                         " Required to let zsh know how to run things on command line
 set ttimeoutlen=50                     " Fix delay when escaping from insert with Esc
 set clipboard=unnamed
-set scrolloff=3
+set scrolloff=3                        " Start scrolling the window 3 rows before the end
+set sidescrolloff=3                    " Start scrolling the window 3 columns before the end
 set showbreak=↪\
 set textwidth=80                       " Set default textwidth to 80
 set colorcolumn=+1                     " Mark the 81st column
@@ -81,6 +86,7 @@ set splitright                         " Horizontal splits open next to the curr
 set modeline                           " Respect modelines
 set modelines=4
 set diffopt+=vertical
+set title                              " Show the PWD and current file in terminal title
 
 if has("autocmd")
   autocmd BufReadPost *
@@ -118,6 +124,17 @@ highlight Folded  guibg=#0A0A0A guifg=#9090D0
 " Leader
 let mapleader=","
 
+" Setup Airline
+let g:airline_powerline_fonts = 1
+let g:airline_theme='papercolor'
+let g:airline_left_sep=''                           " No separator as they seem to look funky
+let g:airline_right_sep=''                          " No separator as they seem to look funky
+let g:airline#extensions#syntastic#enabled = 1      " Do show syntastic warnings in the status line
+let g:airline#extensions#tabline#show_buffers = 0   " Do not list buffers in the status line
+let g:airline_section_x = ''                        " Do not list the filetype or virtualenv in the status line
+let g:airline_section_y = '[L%04l,C%04v]'  " Replace file encoding and file format info with file position
+let g:airline_section_z = ''                        " Do not show the default file position info
+
 " Setup syntastic
 let g:syntastic_check_on_open=1                   " check for errors when file is loaded
 let g:syntastic_javascript_checkers = ['jshint']  " sets jshint as our javascript linter
@@ -135,7 +152,6 @@ nmap <Leader>nt :NERDTreeFind<CR>
 let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeShowHidden=1
 let g:NERDTreeMinimalUI=1
-
 
 " Tab completion
 " will insert tab at beginning of line,
@@ -161,3 +177,13 @@ nnoremap <C-l> <C-w>l
 " Create window splits easier.
 nnoremap <silent> vv <C-w>v
 nnoremap <silent> ss <C-w>s
+
+" Run test suites
+map <Leader>rs :!rspec<cr>
+map <Leader>te :!ember test<cr>
+map <Leader>tx :!mix test<cr>
+
+" Local config
+if filereadable($HOME . "/.vimrc.local")
+  source ~/.vimrc.local
+endif
