@@ -22,7 +22,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 copy_dotfile() {
   if [ -f ~/.${1} ]
   then
-    diff=$(colordiff -u ./${1} ~/.${1})
+    diff=$(colordiff -u ./dotfiles/${1} ~/.${1})
     if [[ $(echo "$diff" | wc -l) -gt 1 ]]
     then
       printf "Updating %s\n" "$1"
@@ -35,7 +35,7 @@ copy_dotfile() {
     unset diff
   fi
 
-  cp ./${1} ~/.${1}
+  cp ./dotfiles/${1} ~/.${1}
 }
 
 fancy_echo "Copying dotfiles!"
