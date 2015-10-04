@@ -1,21 +1,16 @@
 fancy_echo() {
   local fmt="$1"; shift
-
-  # shellcheck disable=SC2059
-  printf "$fmt\n" "$@"
+  printf "\n$fmt\n" "$@"
 }
 
 fancy_echo "This script will setup your laptop"
-printf "\n"
 
 # Get name and email
 fancy_echo "Before we start we need some basic details of you"
 read -p "What is your full name? (e.g. Johny Appleseed): " full_name
 read -p "What is your email address? (e.g. johny.appleseed@fabriquartz.com): " email_address
-printf "\n"
 
 fancy_echo "Hello $full_name <$email_address>"
-printf "\n"
 
 fancy_echo "Press any key to start the installation process, press <CTRL + C> to cancel"
 read
@@ -23,6 +18,39 @@ read
 fancy_echo "We need your sudo password to do a few things"
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+copy_dotfile() {
+  if [ -f ~/.${1} ]
+  then
+    diff=$(colordiff -u ./${1} ~/.${1})
+    if [[ $(echo "$diff" | wc -l) -gt 1 ]]
+    then
+      printf "Updating %s\n" "$1"
+      printf "Changes:\n"
+      printf "\n$diff\n\n"
+      mv ~/.${1} ~/.${1}.backup$(date +%s)
+    else
+     printf "Copying %s\n" "$1"
+    fi
+    unset diff
+  fi
+
+  cp ./${1} ~/.${1}
+}
+
+fancy_echo "Copying dotfiles!"
+copy_dotfile "aliases"
+copy_dotfile "agignore"
+copy_dotfile "bash_profile"
+copy_dotfile "bashrc"
+copy_dotfile "bash_prompt"
+copy_dotfile "exports"
+copy_dotfile "editorconfig"
+copy_dotfile "gitconfig"
+copy_dotfile "gitignore"
+copy_dotfile "vimrc"
+
+fancy_echo "Do 'rm ~/*.backup*' to cleanup the backed up dotfiles"
 
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Brew"
@@ -33,29 +61,27 @@ else
   brew update >> out.log
 fi
 
-printf "\n"
 fancy_echo "Installing Brew formulas!"
-printf "\n"
 
 brew_install() {
   if brew list -1 | grep -Fqx "$1"; then
     if ! brew outdated --quiet "$1" >/dev/null; then
-      fancy_echo "Upgrading %s" "$1"
+      printf "Upgrading %s ... \n" "$1"
       brew upgrade "$@" >> out.log 2>&1
     else
-      fancy_echo "Already installed %s" "$1"
+      printf "Already installed %s\n" "$1"
     fi
   else
-    fancy_echo "Installing %s ..." "$1"
+    printf "Installing %s ...\n" "$1"
     brew install "$@" >> out.log 2>&1
   fi
 }
 
 brew_cask_install() {
   if brew cask list -1 | grep -Fqx "$1"; then
-    fancy_echo "Already installed %s" "$1"
+    printf "Already installed %s\n" "$1"
   else
-    fancy_echo "Installing %s ..." "$1"
+    printf "Installing %s ...\n" "$1"
     brew cask install "$@" >> out.log 2>&1
   fi
 }
@@ -83,6 +109,15 @@ brew_install 'openssl'
 brew unlink openssl       >> out.log 2>&1
 brew link openssl --force >> out.log 2>&1
 
+if brew list -1 | grep -Fqx 'neovim'; then
+  printf "Upgrading NeoVim ...\n"
+  brew reinstall --HEAD neovim >> out.log 2>&1
+else
+  printf "Installing NeoVim ...\n"
+  brew tap neovim/neovim >> out.log 2>&1
+  brew install --HEAD neovim >> out.log 2>&1
+fi
+
 printf "\n"
 brew tap homebrew/versions >> out.log 2>&1
 brew_install 'caskroom/cask/brew-cask'
@@ -104,21 +139,20 @@ brew cleanup >> out.log 2>&1
 brew cask cleanup >> out.log 2>&1
 
 npm_install() {
-  fancy_echo "Installing %s ..." "$1"
+  printf "Installing %s ...\n" "$1"
   npm install -g "$@" >> out.log 2>&1
 }
 
-fancy_echo "\nInstalling NPM packages"
+fancy_echo "Installing NPM packages"
 npm_install 'npm'
 npm_install 'bower'
 npm_install 'phantomjs'
 npm_install 'ember-cli'
 npm_install 'nombom'
 
-fancy_echo "\nCreating folder ~/Project/Fabriquartz"
+fancy_echo "Creating folder ~/Project/Fabriquartz"
 mkdir -p ~/Projects/Fabriquartz
 
-printf "\n"
 if [ -f ~/.ssh/id_rsa ]
 then
   fancy_echo "Skipping SSH key generation, you already have one"
@@ -130,45 +164,10 @@ fi
 cat ~/.ssh/id_rsa.pub | pbcopy
 fancy_echo "\nCopyied public key to clipboard, please add it to your Github account."
 
-copy_dotfile() {
-  if [ -f ~/.${1} ]
-  then
-    diff=$(colordiff -u ./${1} ~/.${1})
-    if [[ $(echo "$diff" | wc -l) -gt 1 ]]
-    then
-      fancy_echo "Updating %s" "$1"
-      fancy_echo "Changes:"
-      fancy_echo "\n$diff\n"
-      mv ~/.${1} ~/.${1}.backup$(date +%s)
-    else
-     fancy_echo "Copying %s" "$1"
-    fi
-    unset diff
+fancy_echo "Linking .vimrc to .nvimrc for NeoVim users"
+ln -s ~/.nvimrc ~/.vimrc >> out.log 2>&1
 
-  fi
-
-  cp ./${1} ~/.${1}
-}
-
-printf "\n"
-fancy_echo "Copying dotfiles!"
-copy_dotfile "aliases"
-copy_dotfile "agignore"
-copy_dotfile "bash_profile"
-copy_dotfile "bashrc"
-copy_dotfile "bash_prompt"
-copy_dotfile "exports"
-copy_dotfile "editorconfig"
-copy_dotfile "gitconfig"
-copy_dotfile "gitignore"
-copy_dotfile "vimrc"
-
-fancy_echo "\nDo 'rm ~/*.backup*' to cleanup the backed up dotfiles"
-
-fancy_echo "\nLinking .vimrc to .nvimrc for NeoVim users"
-ln -s ~/.nvimrc ~/.vimrc
-#
-fancy_echo "\nConfiguring name and email in gitconfig"
+fancy_echo "Configuring name and email in .gitconfig"
 git config --global user.name "$full_name"
 git config --global user.email "$email_address"
 
@@ -184,15 +183,15 @@ fi
 
 source ~/.rvm/scripts/rvm >> out.log 2>&1
 
-fancy_echo "\nInstalling vim plugins"
-vim +NeoBundleInstall +qall
+fancy_echo "Installing vim plugins"
+e +NeoBundleInstall +qall
 
-fancy_echo "\nChanging system Bash to newer Brew Bash"
+fancy_echo "Changing system Bash to newer Brew Bash"
 fancy_echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
 sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
 chsh -s /usr/local/bin/bash
 
-fancy_echo "\nReloading shell"
+fancy_echo "Reloading shell"
 exec $SHELL -l
 
 fancy_echo "\n\n\nDone!"
