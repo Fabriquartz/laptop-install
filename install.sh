@@ -77,6 +77,7 @@ brew_install 'postgresql'
 brew_install 'redis'
 brew_install 'ctags'
 brew_install 'libyaml'
+brew_install 'colordiff'
 
 brew_install 'openssl'
 brew unlink openssl       >> out.log 2>&1
@@ -127,17 +128,25 @@ else
 fi
 
 cat ~/.ssh/id_rsa.pub | pbcopy
-fancy_echo "Copyied public key to clipboard, please add it to your Github account.  Press any key to continue"
-read
+fancy_echo "\nCopyied public key to clipboard, please add it to your Github account."
 
 copy_dotfile() {
   if [ -f ~/.${1} ]
   then
-    fancy_echo "%s already exists, backing up" "$1"
-    mv ~/.${1} ~/.${1}.backup$(date +%s)
+    diff=$(colordiff -u ./${1} ~/.${1})
+    if [[ $(echo "$diff" | wc -l) -gt 1 ]]
+    then
+      fancy_echo "Updating %s" "$1"
+      fancy_echo "Changes:"
+      fancy_echo "\n$diff\n"
+      mv ~/.${1} ~/.${1}.backup$(date +%s)
+    else
+     fancy_echo "Copying %s" "$1"
+    fi
+    unset diff
+
   fi
 
-  fancy_echo "Copying %s" "$1"
   cp ./${1} ~/.${1}
 }
 
@@ -154,8 +163,12 @@ copy_dotfile "gitconfig"
 copy_dotfile "gitignore"
 copy_dotfile "vimrc"
 
-printf "\n"
-fancy_echo "Configuring name and email in gitconfig"
+fancy_echo "\nDo 'rm ~/*.backup*' to cleanup the backed up dotfiles"
+
+fancy_echo "\nLinking .vimrc to .nvimrc for NeoVim users"
+ln -s ~/.nvimrc ~/.vimrc
+#
+fancy_echo "\nConfiguring name and email in gitconfig"
 git config --global user.name "$full_name"
 git config --global user.email "$email_address"
 
@@ -171,12 +184,10 @@ fi
 
 source ~/.rvm/scripts/rvm >> out.log 2>&1
 
-printf "\n"
-fancy_echo "Installing vim plugins"
+fancy_echo "\nInstalling vim plugins"
 vim +NeoBundleInstall +qall
 
-printf "\n"
-fancy_echo "Changing system Bash to newer Brew Bash"
+fancy_echo "\nChanging system Bash to newer Brew Bash"
 fancy_echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
 sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
 chsh -s /usr/local/bin/bash
