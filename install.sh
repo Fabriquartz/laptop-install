@@ -19,38 +19,6 @@ fancy_echo "We need your sudo password to do a few things"
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-copy_dotfile() {
-  if [ -f ~/.${1} ]
-  then
-    diff=$(colordiff -u ~/.${1} ./dotfiles/${1})
-    if [[ $(echo "$diff" | wc -l) -gt 1 ]]
-    then
-      printf "Updating %s\n" "$1"
-      printf "Changes:\n"
-      printf "\n$diff\n\n"
-      mv ~/.${1} ~/.${1}.backup$(date +%s)
-    else
-     printf "Copying %s\n" "$1"
-    fi
-    unset diff
-  fi
-
-  cp ./dotfiles/${1} ~/.${1}
-}
-
-fancy_echo "Copying dotfiles!"
-copy_dotfile "aliases"
-copy_dotfile "agignore"
-copy_dotfile "bash_profile"
-copy_dotfile "bashrc"
-copy_dotfile "bash_prompt"
-copy_dotfile "exports"
-copy_dotfile "editorconfig"
-copy_dotfile "gitconfig"
-copy_dotfile "gitignore"
-copy_dotfile "vimrc"
-
-fancy_echo "Do 'rm ~/*.backup*' to cleanup the backed up dotfiles"
 
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Brew"
@@ -109,6 +77,40 @@ brew_install 'openssl'
 brew unlink openssl       >> out.log 2>&1
 brew link openssl --force >> out.log 2>&1
 
+copy_dotfile() {
+  if [ -f ~/.${1} ]
+  then
+    diff=$(colordiff -u ~/.${1} ./dotfiles/${1})
+    if [[ $(echo "$diff" | wc -l) -gt 1 ]]
+    then
+      printf "Updating %s\n" "$1"
+      printf "Changes:\n"
+      printf "\n$diff\n\n"
+      mv ~/.${1} ~/.${1}.backup$(date +%s)
+    else
+     printf "Copying %s\n" "$1"
+    fi
+    unset diff
+  fi
+
+  cp ./dotfiles/${1} ~/.${1}
+}
+
+fancy_echo "Copying dotfiles!"
+copy_dotfile "aliases"
+copy_dotfile "agignore"
+copy_dotfile "bash_profile"
+copy_dotfile "bashrc"
+copy_dotfile "bash_prompt"
+copy_dotfile "exports"
+copy_dotfile "editorconfig"
+copy_dotfile "gitconfig"
+copy_dotfile "gitignore"
+copy_dotfile "vimrc"
+
+fancy_echo "Do 'rm ~/*.backup*' to cleanup the backed up dotfiles"
+
+printf "\n"
 if brew list -1 | grep -Fqx 'neovim'; then
   printf "Upgrading NeoVim ...\n"
   brew reinstall --HEAD neovim >> out.log 2>&1
