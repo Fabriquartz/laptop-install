@@ -22,7 +22,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 copy_dotfile() {
   if [ -f ~/.${1} ]
   then
-    diff=$(colordiff -u ./dotfiles/${1} ~/.${1})
+    diff=$(colordiff -u ~/.${1} ./dotfiles/${1})
     if [[ $(echo "$diff" | wc -l) -gt 1 ]]
     then
       printf "Updating %s\n" "$1"
@@ -178,13 +178,10 @@ if ! command -v rvm >/dev/null; then
 else
   fancy_echo "Updating the Ruby version manager"
   rvm get stable >> out.log 2>&1
-  rvm reload >> out.log 2>&1
 fi
 
-source ~/.rvm/scripts/rvm >> out.log 2>&1
-
 fancy_echo "Installing vim plugins"
-e +NeoBundleInstall +qall
+vim +NeoBundleInstall +qall
 
 fancy_echo "Changing system Bash to newer Brew Bash"
 fancy_echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
