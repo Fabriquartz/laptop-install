@@ -73,4 +73,9 @@ jscbin="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources
 [ -e "${jscbin}" ] && alias jsc="${jscbin}";
 unset jscbin;
 
+# hub as git
+if command -v hub >/dev/null; then
+  eval "$(hub alias -s)"
+fi
+
 [[ -f ~/.aliases.local ]] && source ~/.aliases.local
