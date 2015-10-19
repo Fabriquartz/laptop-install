@@ -29,6 +29,8 @@
   m = merge
   mm = merge --no-ff
 
+  fa = fetch --all
+
   ri = rebase --interactive
   rc = rebase --continue
   rs = rebase --skip
@@ -37,11 +39,14 @@
   tags = tag -l
   branches = branch -a
   remotes = remote -v
+  stashes = stash list
 
   ss = stash
   sp = stash pop
 
   contributors = shortlog --summary --numbered
+
+  pr = "!hub pull-request"
 
 [push]
 
