@@ -182,6 +182,9 @@ else
   rvm get stable >> out.log 2>&1
 fi
 
+rvm install 2.2.3 2>&1
+gem install bundler 2>&1
+
 fancy_echo "Installing vim plugins"
 vim +NeoBundleInstall +qall
 
