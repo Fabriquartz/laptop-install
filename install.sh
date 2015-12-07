@@ -106,6 +106,7 @@ copy_dotfile "exports"
 copy_dotfile "editorconfig"
 copy_dotfile "gitconfig"
 copy_dotfile "gitignore"
+copy_dotfile "inputrc"
 copy_dotfile "vimrc"
 
 fancy_echo "Do 'rm ~/*.backup*' to cleanup the backed up dotfiles"
