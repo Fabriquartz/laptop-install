@@ -167,7 +167,9 @@ cat ~/.ssh/id_rsa.pub | pbcopy
 fancy_echo "\nCopyied public key to clipboard, please add it to your Github account."
 
 fancy_echo "Linking .vimrc to .nvimrc for NeoVim users"
-ln -s ~/.vimrc ~/.nvimrc >> out.log 2>&1
+mkdir ~/.config >> out.log 2>&1
+ln -s ~/.vim ~/.config/nvim >> out.log 2>&1
+ln -s ~/.vimrc ~/.config/nvim/init.vim >> out.log 2>&1
 
 fancy_echo "Configuring name and email in .gitconfig"
 git config --global user.name "$full_name"
