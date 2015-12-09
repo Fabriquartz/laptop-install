@@ -133,6 +133,7 @@ brew_cask_install 'alfred'
 brew_cask_install 'harvest'
 brew_cask_install 'virtualbox'
 brew_cask_install 'vagrant'
+brew_cask_install 'screenhero'
 
 fancy_echo "Updating misc Brew packages (if any)"
 brew upgrade >> out.log 2>&1
