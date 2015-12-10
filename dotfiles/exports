@@ -7,6 +7,6 @@ export LANG='en_US.UTF-8';
 export LC_ALL='en_US.UTF-8';
 
 # Oracle instantclient
-export OCI_DIR=/opt/instantclient_11_2
+export OCI_DIR=$(brew --prefix)/lib
 
 [[ -f ~/.exports.local ]] && source ~/.exports.local
