@@ -78,4 +78,7 @@ if command -v hub >/dev/null; then
   eval "$(hub alias -s)"
 fi
 
+# Visual studio code as code
+code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
+
 [[ -f ~/.aliases.local ]] && source ~/.aliases.local
