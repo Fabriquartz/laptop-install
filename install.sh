@@ -29,6 +29,8 @@ else
   brew update >> out.log
 fi
 
+brew tap homebrew/completions >> out.log 2>&1
+
 fancy_echo "Installing Brew formulas!"
 
 brew_install() {
@@ -65,6 +67,7 @@ brew_install 'vim'
 brew_install 'the_silver_searcher'
 brew_install 'watchman'
 brew_install 'node'
+brew_install 'nvm'
 brew_install 'hub'
 brew_install 'elixir'
 brew_install 'postgresql'
@@ -76,6 +79,16 @@ brew_install 'colordiff'
 brew_install 'openssl'
 brew unlink openssl       >> out.log 2>&1
 brew link openssl --force >> out.log 2>&1
+
+brew_install 'homebrew/completions/brew-cask-completion'
+brew_install 'homebrew/completions/bundler-completion'
+brew_install 'homebrew/completions/gem-completion'
+brew_install 'homebrew/completions/mix-completion'
+brew_install 'homebrew/completions/open-completion'
+brew_install 'homebrew/completions/rails-completion'
+brew_install 'homebrew/completions/rake-completion'
+brew_install 'homebrew/completions/ruby-completion'
+brew_install 'homebrew/completions/vagrant-completion'
 
 copy_dotfile() {
   if [ -f ~/.${1} ]

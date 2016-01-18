@@ -6,6 +6,8 @@ export EDITOR=$VISUAL
 export LANG='en_US.UTF-8';
 export LC_ALL='en_US.UTF-8';
 
+export NVM_DIR=~/.nvm
+
 # Oracle instantclient
 export OCI_DIR=$(brew --prefix)/lib
 
