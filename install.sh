@@ -75,6 +75,7 @@ brew_install 'redis'
 brew_install 'ctags'
 brew_install 'libyaml'
 brew_install 'colordiff'
+brew_install 'heroku-toolbelt'
 
 brew_install 'openssl'
 brew unlink openssl       >> out.log 2>&1
