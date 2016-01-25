@@ -138,6 +138,7 @@ let g:airline_section_z = ''                        " Do not show the default fi
 " Setup syntastic
 let g:syntastic_check_on_open=1                   " check for errors when file is loaded
 let g:syntastic_javascript_checkers = ['jshint']  " sets jshint as our javascript linter
+let g:syntastic_sh_checkers = ['shellcheck']
 let g:syntastic_cs_checkers = ['code_checker']
 let g:syntastic_mode_map={ 'mode': 'active',
                      \ 'active_filetypes': [],
