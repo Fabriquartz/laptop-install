@@ -77,6 +77,7 @@ brew_install 'libyaml'
 brew_install 'colordiff'
 brew_install 'heroku-toolbelt'
 brew_install 'shellcheck'
+brew_install 'python'
 
 brew_install 'openssl'
 brew unlink openssl       >> out.log 2>&1
@@ -168,6 +169,7 @@ npm_install 'bower'
 npm_install 'phantomjs'
 npm_install 'ember-cli'
 npm_install 'nombom'
+npm_install 'tern'
 
 fancy_echo "Creating folder ~/Project/Fabriquartz"
 mkdir -p ~/Projects/Fabriquartz
@@ -206,6 +208,9 @@ gem install bundler 2>&1
 
 fancy_echo "Installing vim plugins"
 vim +NeoBundleInstall +qall
+
+pip2 install --user neovim 2>&1
+cd ~/.vim/bundle/tern_for_vim && npm install 2>&1;
 
 fancy_echo "Changing system Bash to newer Brew Bash"
 fancy_echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
