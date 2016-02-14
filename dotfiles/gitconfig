@@ -1,19 +1,23 @@
 [alias]
 
   a = add
+  aa = add .
   ap = add --patch
 
-  s = status -s
-  st = status -s
+  s = status
+  st = status
 
   c = commit -m
-  ca = commit -am
-  amend = commit --amend --reuse-message=HEAD
+  ca = commit --amend --reuse-message=HEAD
+
+  fix = commit --fixup
 
   co = checkout
   cn = checkout -b
   fb = checkout -b
   rmb = branch -D
+
+  pf = push -f
 
   cp = cherry-pick
 
@@ -35,6 +39,8 @@
   rc = rebase --continue
   rs = rebase --skip
   ra = rebase --abort
+
+  rbm = rebase master
 
   tags = tag -l
   branches = branch -a
