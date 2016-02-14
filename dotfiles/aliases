@@ -62,6 +62,11 @@ alias reload="exec $SHELL -l"
 alias b="bundle"
 alias be="bundle exec"
 
+# Alias common Ember commands
+alias es="ember server"
+alias et="ember test"
+alias ets="ember test --server --no-launch"
+
 # Prett print path
 alias path='echo $PATH | tr -s ":" "\n"'
 
