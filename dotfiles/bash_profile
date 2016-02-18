@@ -25,6 +25,11 @@ if [ -f $(brew --prefix)/share/bash-completion/bash_completion ]; then
   source $(brew --prefix)/share/bash-completion/bash_completion
 fi
 
+# Add tab completion for git commands
+if [ -f $(brew --prefix)/etc/bash_completion.d/git-completion.bash ]; then
+  . $(brew --prefix)/etc/bash_completion.d/git-completion.bash
+fi
+
 # Load NVM
 [[ -s $(brew --prefix nvm)/nvm.sh ]] && source $(brew --prefix nvm)/nvm.sh
 
