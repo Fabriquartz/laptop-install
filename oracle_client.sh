@@ -21,8 +21,8 @@ read
 
 fancy_echo "Installing instant client!"
 
-ln -sf ~/Downloads/instantclient-basiclite-macos.x64-11.2.0.4.0.zip /Library/Caches/Homebrew/
-ln -sf ~/Downloads/instantclient-sdk-macos.x64-11.2.0.4.0.zip /Library/Caches/Homebrew/
+ln -sf ~/Downloads/instantclient-basiclite-macos.x64-12.1.0.2.0.zip /Library/Caches/Homebrew/
+ln -sf ~/Downloads/instantclient-sdk-macos.x64-12.1.0.2.0.zip /Library/Caches/Homebrew/
 
 brew install InstantClientTap/instantclient/instantclient-basiclite
 brew install InstantClientTap/instantclient/instantclient-sdk
