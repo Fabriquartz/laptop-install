@@ -138,6 +138,9 @@ else
 fi
 
 printf "\n"
+# Make brew cask install Apps in /Applications
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
 brew tap homebrew/versions >> out.log 2>&1
 brew_install 'caskroom/cask/brew-cask'
 
@@ -203,7 +206,7 @@ else
   rvm get stable >> out.log 2>&1
 fi
 
-rvm install 2.2.3 2>&1
+rvm install 2.3.1 2>&1
 gem install bundler 2>&1
 
 fancy_echo "Installing vim plugins"
