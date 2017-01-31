@@ -67,6 +67,11 @@ alias es="ember server"
 alias et="ember test"
 alias ets="ember test --server --no-launch"
 
+alias elist-staging="ember deploy:list staging"
+alias elist-production="ember deploy:list production"
+alias eactivate-staging="ember deploy:activate staging --revision"
+alias eactivate-production="ember deploy:activate production --revision"
+
 # Prett print path
 alias path='echo $PATH | tr -s ":" "\n"'
 
