@@ -146,7 +146,6 @@ brew_install 'caskroom/cask/brew-cask'
 
 brew_cask_install 'google-chrome'
 brew_cask_install 'visual-studio-code'
-brew_cask_install 'dash'
 brew_cask_install 'slack'
 brew_cask_install 'alfred'
 brew_cask_install 'harvest'
