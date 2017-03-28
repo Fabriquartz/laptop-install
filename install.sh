@@ -149,9 +149,9 @@ brew_cask_install 'visual-studio-code'
 brew_cask_install 'slack'
 brew_cask_install 'alfred'
 brew_cask_install 'harvest'
-brew_cask_install 'virtualbox'
-brew_cask_install 'vagrant'
+brew_cask_install 'docker'
 brew_cask_install 'screenhero'
+brew_cask_install 'gas-mask'  # hosts-file management
 
 fancy_echo "Updating misc Brew packages (if any)"
 brew upgrade >> out.log 2>&1
