@@ -63,6 +63,7 @@ brew_install 'findutils'
 brew_install 'bash'
 brew_install 'homebrew/versions/bash-completion2'
 brew_install 'git'
+brew_install 'git-standup'
 brew_install 'vim'
 brew_install 'the_silver_searcher'
 brew_install 'watchman'
@@ -135,6 +136,8 @@ else
   printf "Installing NeoVim ...\n"
   brew tap neovim/neovim >> out.log 2>&1
   brew install --HEAD neovim >> out.log 2>&1
+  #shortcut to vimrc for newer neovim versions
+  ln ~/.vimrc ~/.config/nvim/init.vim
 fi
 
 printf "\n"
