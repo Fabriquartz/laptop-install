@@ -52,6 +52,7 @@ set backspace=indent,eol,start         " Backspacing over everything in insert m
 set history=200                        " Keep 200 lines of command line history
 set hlsearch                           " Highlight the last used search pattern
 set incsearch                          " Do incremental searching
+set mouse=a
 set list
 set listchars=tab:»·,trail:·,nbsp:·
 set nobackup                           " Don't constantly write backup files
