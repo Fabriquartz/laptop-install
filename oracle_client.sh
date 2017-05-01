@@ -5,12 +5,12 @@ fancy_echo() {
 
 fancy_echo "This script will help you install the Oracle client"
 
-fancy_echo "Before you start you will need to download a few packages:"
+fancy_echo "Before you can get started  you will need to download a few packages:"
 
 echo "  - (64-bit) Instant Client - Basic Lite"
 echo "  - (64-bit) Instant Client - SDK"
 
-fancy_echo "Please ensure they are downloaded to ~/Downloads as .zip files"
+fancy_echo "Please ensure these packages are downloaded to ~/Downloads as .zip files"
 
 fancy_echo "Press any key to open the download page ..."
 read

@@ -6,7 +6,7 @@ fancy_echo() {
 fancy_echo "This script will setup your laptop"
 
 # Get name and email
-fancy_echo "Before we start we need some basic details of you"
+fancy_echo "Before we start we need some basic details about you"
 read -p "What is your full name? (e.g. Johny Appleseed): " full_name
 read -p "What is your email address? (e.g. johny.appleseed@fabriquartz.com): " email_address
 
@@ -21,11 +21,11 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 
 if ! command -v brew >/dev/null; then
-  fancy_echo "Installing Brew"
+  fancy_echo "Installing Homebrew..."
   curl -fsS \
     'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
 else
-  fancy_echo "Updating Brew ..."
+  fancy_echo "Updating Homebrew..."
   brew update >> out.log
 fi
 
@@ -126,7 +126,7 @@ copy_dotfile "gitignore"
 copy_dotfile "inputrc"
 copy_dotfile "vimrc"
 
-fancy_echo "Do 'rm ~/*.backup*' to cleanup the backed up dotfiles"
+fancy_echo "Do 'rm ~/*.backup*' to clean up the backed up dotfiles"
 
 printf "\n"
 if brew list -1 | grep -Fqx 'neovim'; then
@@ -168,7 +168,7 @@ npm_install() {
   npm install -g "$@" >> out.log 2>&1
 }
 
-fancy_echo "Installing NPM packages"
+fancy_echo "Installing NPM packages!"
 npm_install 'npm'
 npm_install 'bower'
 npm_install 'phantomjs'
@@ -183,7 +183,7 @@ if [ -f ~/.ssh/id_rsa ]
 then
   fancy_echo "Skipping SSH key generation, you already have one"
 else
-  fancy_echo "Generating SSH key"
+  fancy_echo "Generating SSH key..."
   ssh-keygen -q -t rsa -b 4096 -C "$email_address" -N "" -f ~/.ssh/id_rsa
 fi
 
@@ -218,7 +218,7 @@ pip2 install --user neovim 2>&1
 cd ~/.vim/bundle/tern_for_vim && npm install 2>&1;
 
 fancy_echo "Changing system Bash to newer Brew Bash"
-fancy_echo "If this fails, please do `chsh -s /usrl/local/bin/bash` manually"
+fancy_echo "If this fails, please do `chsh -s /usr/local/bin/bash` manually"
 sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
 chsh -s /usr/local/bin/bash
 
