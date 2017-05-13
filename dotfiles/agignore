@@ -1,6 +1,7 @@
 .git
 .cache
 .keep
+.idea
 node_modules
 bower_components
 tmp
