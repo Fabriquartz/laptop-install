@@ -1,228 +1,232 @@
-fancy_echo() {
-  local fmt="$1"; shift
-  printf "\n$fmt\n" "$@"
-}
+#!/bin/bash
+source utils/installers.sh
+source utils/helpers.sh
 
-fancy_echo "This script will setup your laptop"
+echo_h1 "Fabriquartz Laptop Install"
 
-# Get name and email
-fancy_echo "Before we start we need some basic details about you"
-read -p "What is your full name? (e.g. Johny Appleseed): " full_name
-read -p "What is your email address? (e.g. johny.appleseed@fabriquartz.com): " email_address
+# setting sudo access
+fancy_echo "Sudo is required for this installation"
+sudo tee /etc/sudoers.d/$USER <<END
+END
 
-fancy_echo "Hello $full_name <$email_address>"
+echo_h1 "Preparing a few things"
 
-fancy_echo "Press any key to start the installation process, press <CTRL + C> to cancel"
-read
+fancy_echo "Please provide basic information to setup your git and ssh."
 
-fancy_echo "We need your sudo password to do a few things"
-sudo -v
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+read -rp "What is your full name? (e.g. Johny Appleseed): " full_name
+read -rp "What is your email address? (e.g. johny.appleseed@fabriquartz.com): " email_address
 
+read -rp "Do you want back-end specific configuration (y/n)?" choice
+case "$choice" in
+  y|Y ) back_end=true;;
+esac
 
-if ! command -v brew >/dev/null; then
-  fancy_echo "Installing Homebrew..."
-  curl -fsS \
-    'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
-else
-  fancy_echo "Updating Homebrew..."
-  brew update >> out.log
-fi
+read -rp "Do you want front-end specific configuration (y/n)?" choice
+case "$choice" in
+  y|Y ) front_end=true;;
+esac
 
-brew tap homebrew/completions >> out.log 2>&1
-
-fancy_echo "Installing Brew formulas!"
-
-brew_install() {
-  if brew list -1 | grep -Fqx "$1"; then
-    if ! brew outdated --quiet "$1" >/dev/null; then
-      printf "Upgrading %s ... \n" "$1"
-      brew upgrade "$@" >> out.log 2>&1
-    else
-      printf "Already installed %s\n" "$1"
-    fi
-  else
-    printf "Installing %s ...\n" "$1"
-    brew install "$@" >> out.log 2>&1
-  fi
-}
-
-brew_cask_install() {
-  if brew cask list -1 | grep -Fqx "$1"; then
-    printf "Already installed %s\n" "$1"
-  else
-    printf "Installing %s ...\n" "$1"
-    brew cask install "$@" >> out.log 2>&1
-  fi
-}
-
-brew_install 'wget'
-brew_install 'coreutils'
-brew_install 'moreutils'
-brew_install 'findutils'
-brew_install 'bash'
-brew_install 'homebrew/versions/bash-completion2'
-brew_install 'git'
-brew_install 'git-standup'
-brew_install 'vim'
-brew_install 'the_silver_searcher'
-brew_install 'watchman'
-brew_install 'node'
-brew_install 'nvm'
-brew_install 'hub'
-brew_install 'elixir'
-brew_install 'postgresql'
-brew_install 'redis'
-brew_install 'ctags'
-brew_install 'libyaml'
-brew_install 'colordiff'
-brew_install 'heroku-toolbelt'
-brew_install 'shellcheck'
-brew_install 'python'
-
-brew_install 'openssl'
-brew unlink openssl       >> out.log 2>&1
-brew link openssl --force >> out.log 2>&1
-
-brew_install 'homebrew/completions/brew-cask-completion'
-brew_install 'homebrew/completions/bundler-completion'
-brew_install 'homebrew/completions/gem-completion'
-brew_install 'homebrew/completions/mix-completion'
-brew_install 'homebrew/completions/open-completion'
-brew_install 'homebrew/completions/rails-completion'
-brew_install 'homebrew/completions/rake-completion'
-brew_install 'homebrew/completions/ruby-completion'
-brew_install 'homebrew/completions/vagrant-completion'
-
-copy_dotfile() {
-  if [ -f ~/.${1} ]
-  then
-    diff=$(colordiff -u ~/.${1} ./dotfiles/${1})
-    if [[ $(echo "$diff" | wc -l) -gt 1 ]]
-    then
-      printf "Updating %s\n" "$1"
-      printf "Changes:\n"
-      printf "\n$diff\n\n"
-      mv ~/.${1} ~/.${1}.backup$(date +%s)
-    else
-     printf "Copying %s\n" "$1"
-    fi
-    unset diff
-  fi
-
-  cp ./dotfiles/${1} ~/.${1}
-}
-
-fancy_echo "Copying dotfiles!"
-copy_dotfile "aliases"
-copy_dotfile "agignore"
-copy_dotfile "bash_profile"
-copy_dotfile "bashrc"
-copy_dotfile "bash_prompt"
-copy_dotfile "exports"
-copy_dotfile "editorconfig"
-copy_dotfile "gitconfig"
-copy_dotfile "gitignore"
-copy_dotfile "inputrc"
-copy_dotfile "vimrc"
-
-fancy_echo "Do 'rm ~/*.backup*' to clean up the backed up dotfiles"
+fancy_echo "Thank you, please confirm the info below:"
 
 printf "\n"
-if brew list -1 | grep -Fqx 'neovim'; then
-  printf "Upgrading NeoVim ...\n"
-  brew reinstall --HEAD neovim >> out.log 2>&1
-else
-  printf "Installing NeoVim ...\n"
-  brew tap neovim/neovim >> out.log 2>&1
-  brew install --HEAD neovim >> out.log 2>&1
-  #shortcut to vimrc for newer neovim versions
-  ln ~/.vimrc ~/.config/nvim/init.vim
-fi
+printf "name:      %s\n" "$full_name"
+printf "email:     %s\n" "$email_address"
+printf "back-end:  %s\n" "$(echo_bool "$back_end")"
+printf "front-end: %s\n" "$(echo_bool "$front_end")"
 
-printf "\n"
-# Make brew cask install Apps in /Applications
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+fancy_echo "Press ENTER to continue, or ctrl-c to abort"
+read -r
 
-brew tap homebrew/versions >> out.log 2>&1
-brew_install 'caskroom/cask/brew-cask'
+# ==============================================================================
+# prepare for install
+# ==============================================================================
+echo_h1 "1.0 Installing prerequisites"
 
-brew_cask_install 'google-chrome'
-brew_cask_install 'visual-studio-code'
-brew_cask_install 'slack'
-brew_cask_install 'alfred'
-brew_cask_install 'harvest'
-brew_cask_install 'docker'
-brew_cask_install 'screenhero'
-brew_cask_install 'gas-mask'  # hosts-file management
+fancy_echo "Creating ~/Projects/Fabriquartz"
+mkdir -p ~/Projects/Fabriquartz
 
-fancy_echo "Updating misc Brew packages (if any)"
-brew upgrade >> out.log 2>&1
+fancy_echo "Checking Xcode"
+xcode-select -p >>/dev/null 2>&1 || install_xcode
 
-fancy_echo "Cleaning up all the Brew spills"
+install_brew
+
+brew_tap 'caskroom/cask'
+brew_tap 'neovim/neovim'
+
+# ==============================================================================
+# installing tools & applications
+# ==============================================================================
+echo_h1 "2.0 Installing tools & applications"
+
+echo_h2 "2.1 Updating installed brew formulas"
+
+brew_upgrade
+installed=$(brew list)
+installed+=$(brew cask list)
+
+echo_h2 "2.2 Installing missing cask packages"
+
+brew_cask_install 'google-chrome'         # duh
+brew_cask_install 'visual-studio-code'    # for non-vimmers
+brew_cask_install 'bettertouchtool'       # more customization
+brew_cask_install 'karabiner-elements'    # for easy key remapping (eg cpslck -> esc)
+brew_cask_install 'slack'                 # team communication
+brew_cask_install 'postman'               # rest client
+brew_cask_install 'alfred'                # enhanced launcher
+brew_cask_install 'harvest'               # time tracking & billing
+brew_cask_install 'docker'                # used for nginx/database
+brew_cask_install 'screenhero'            # easy screensharing
+brew_cask_install 'gas-mask'              # hosts-file management
+
+echo_h2 "2.3 Installing missing brew formulas"
+# tools
+brew_install 'wget'                   # handy for downloading files
+brew_install 'coreutils'              # ported unix commands
+brew_install 'moreutils'              # more commands
+brew_install 'findutils'              # even more commands
+brew_install 'bash'                   # newer version than osx default
+brew_install 'git'                    # git cli
+brew_install 'hub'                    # github cli
+brew_install 'git-standup'            # see commits last day
+brew_install 'the_silver_searcher'    # enhanced searcher with ag
+brew_install 'postgresql'             # database
+brew_install 'redis'                  # dependency for rails
+brew_install 'ctags'                  # indexer for vim
+brew_install 'libyaml'                # dependency for rails
+brew_install 'colordiff'              # fancy colors for diffs
+brew_install 'shellcheck'             # linter for bash/sh
+brew_install 'neovim'                 # preffered editor
+# languages
+brew_install 'nvm'                    # node version management
+brew_install 'python3'                # python 3
+brew_install 'node'                   # node
+brew_install 'elixir'                 # elixir
+# completions
+brew_install 'bash-completion2'
+brew_install 'brew-cask-completion'
+brew_install 'bundler-completion'
+brew_install 'cap-completion'
+brew_install 'docker-completion'
+brew_install 'gem-completion'
+brew_install 'mix-completion'
+brew_install 'open-completion'
+brew_install 'rails-completion'
+brew_install 'rake-completion'
+brew_install 'ruby-completion'
+
+echo_h2 "2.3 Installing npm packages"
+
+npm_install 'npm'                         # node package manager
+npm_install 'tern'                        # js indexer
+
+echo_h2 "2.4 Cleaning up installations"
+
+fancy_echo "Cleaning brew"
 brew cleanup >> out.log 2>&1
 brew cask cleanup >> out.log 2>&1
 
-npm_install() {
-  printf "Installing %s ...\n" "$1"
-  npm install -g "$@" >> out.log 2>&1
-}
+# ==============================================================================
+# installing dotfiles
+# ==============================================================================
+echo_h1 "3.0 Copying dotfiles"
 
-fancy_echo "Installing NPM packages!"
-npm_install 'npm'
-npm_install 'bower'
-npm_install 'phantomjs'
-npm_install 'ember-cli'
-npm_install 'nombom'
-npm_install 'tern'
+install_dotfile "aliases"
+install_dotfile "agignore"
+install_dotfile "bash_profile"
+install_dotfile "bashrc"
+install_dotfile "bash_prompt"
+install_dotfile "exports"
+install_dotfile "editorconfig"
+install_dotfile "gitconfig"
+install_dotfile "gitignore"
+install_dotfile "inputrc"
 
-fancy_echo "Creating folder ~/Project/Fabriquartz"
-mkdir -p ~/Projects/Fabriquartz
+# ==============================================================================
+# running some custom installations
+# ==============================================================================
+echo_h1 "4.0 Installing & Configuring"
 
-if [ -f ~/.ssh/id_rsa ]
-then
-  fancy_echo "Skipping SSH key generation, you already have one"
-else
-  fancy_echo "Generating SSH key..."
-  ssh-keygen -q -t rsa -b 4096 -C "$email_address" -N "" -f ~/.ssh/id_rsa
+echo_h2 "4.1 Configuring neovim"
+install_neovim
+
+if [ "$back_end" = true ]; then
+  echo_h2 "4.2 Back end Confuguration"
+  source ./back-end.sh
 fi
 
-cat ~/.ssh/id_rsa.pub | pbcopy
-fancy_echo "\nCopyied public key to clipboard, please add it to your Github account."
+if [ "$front_end" = true ]; then
+  echo_h2 "4.2 Front end Confuguration"
+  source ./front-end.sh
+fi
 
-fancy_echo "Linking .vimrc to .nvimrc for NeoVim users"
-mkdir ~/.config >> out.log 2>&1
-ln -s ~/.vim ~/.config/nvim >> out.log 2>&1
-ln -s ~/.vimrc ~/.config/nvim/init.vim >> out.log 2>&1
+# ==============================================================================
+# setting up ssh
+# ==============================================================================
 
-fancy_echo "Configuring name and email in .gitconfig"
+echo_h2 "4.3 Configuring ssh"
+
+if file_exists ~/.ssh/id_rsa; then
+  fancy_echo "Key found, skipping generation"
+else
+  fancy_echo "Generating key"
+  ssh-keygen -q -t rsa -b 4096 -C "$email_address" -N "" -f ~/.ssh/id_rsa
+  pbcopy < ~/.ssh/id_rsa.pub
+  fancy_echo "Copied public key to clipboard, please add it to github: https://github.com/settings/keys"
+fi
+
+# ==============================================================================
+# setting up git
+# ==============================================================================
+
+echo_h2 "4.4 Configuring git"
+fancy_echo "Setting name & email"
 git config --global user.name "$full_name"
 git config --global user.email "$email_address"
 
-printf "\n"
-if ! command -v rvm >/dev/null; then
-  fancy_echo "Installing the Ruby version manager"
-  \curl -sSL https://get.rvm.io | bash -s stable --ruby >> out.log 2>&1
-else
-  fancy_echo "Updating the Ruby version manager"
-  rvm get stable >> out.log 2>&1
-fi
+# ==============================================================================
+# configuring a few more things
+# ==============================================================================
 
-rvm install 2.3.1 2>&1
-gem install bundler 2>&1
+echo_h2 "4.5 Configuring redis"
 
-fancy_echo "Installing vim plugins"
-vim +NeoBundleInstall +qall
+fancy_echo "Set redis as launchAgent"
+ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents >> out.log 2>&1
 
-pip2 install --user neovim 2>&1
-cd ~/.vim/bundle/tern_for_vim && npm install 2>&1;
+echo_h2 "4.6 Configuring OSX"
 
-fancy_echo "Changing system Bash to newer Brew Bash"
-fancy_echo "If this fails, please do `chsh -s /usr/local/bin/bash` manually"
-sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
-chsh -s /usr/local/bin/bash
+fancy_echo "Enabling hidden files in Finder"
+defaults write com.apple.finder AppleShowAllFiles TRUE
 
-fancy_echo "Reloading shell"
-exec $SHELL -l
+fancy_echo "Enabling Full file path in Finder"
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES
 
-fancy_echo "\n\n\nDone!"
+killall Finder
+
+fancy_echo "Setting scrollbar visibility"
+defaults write com.apple.Terminal AppleShowScrollBars -string WhenScrolling
+
+fancy_echo "Disabling smart quotes and dashes"
+defaults write -g NSAutomaticDashSubstitutionEnabled 0
+defaults write -g NSAutomaticQuoteSubstitutionEnabled 0
+
+fancy_echo "Disabling auto open downloads in Safari"
+defaults write com.apple.Safari AutoOpenSafeDownloads -boolean NO
+
+fancy_echo "Making KeyRepeat faster"
+defaults write -g InitialKeyRepeat -int 15 # normal minimum is 15 (225 ms)
+defaults write -g KeyRepeat -int 3 # normal minimum is 2 (30 ms)
+
+fancy_echo "Configuring shell"
+sudo sh -c 'echo /usr/local/bin/bash >> /etc/shells'
+sudo chsh -s /usr/local/bin/bash "$USER"
+
+# ==============================================================================
+# done
+# ==============================================================================
+
+# revoking sudo access
+sudo /bin/rm "/etc/sudoers.d/${USER}"
+sudo -k
+
+echo_h1 "finsished installation"
+exec /usr/local/bin/bash -l

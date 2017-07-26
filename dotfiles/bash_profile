@@ -28,7 +28,9 @@ fi
 # Load NVM
 [[ -s $(brew --prefix nvm)/nvm.sh ]] && source $(brew --prefix nvm)/nvm.sh
 
-# Load RVM
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+# Load Rbenv
+if [ type rbenv &>/dev/null ]; then
+  eval "$(rbenv init -)"
+fi
 
 [[ -f ~/.bash_profile.local ]] && source ~/.bash_profile.local
