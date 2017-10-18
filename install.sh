@@ -96,6 +96,7 @@ brew_install 'libyaml'                # dependency for rails
 brew_install 'colordiff'              # fancy colors for diffs
 brew_install 'shellcheck'             # linter for bash/sh
 brew_install 'neovim'                 # preffered editor
+brew_install 'cmake'                  # make tool required for ruby
 # languages
 brew_install 'nvm'                    # node version management
 brew_install 'python3'                # python 3

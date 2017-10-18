@@ -14,7 +14,7 @@ brew_install 'rbenv-gemset'
 
 eval "$(rbenv init -)"
 
-ruby_version='2.3.1'
+ruby_version='2.4.1'
 
 if ! rbenv versions | grep -q "$ruby_version"; then
   printf "Installing ruby %s\n" "$ruby_version"
