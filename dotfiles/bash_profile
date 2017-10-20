@@ -25,6 +25,9 @@ if [ -f $(brew --prefix)/share/bash-completion/bash_completion ]; then
   source $(brew --prefix)/share/bash-completion/bash_completion
 fi
 
+# load autojump
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
 # Load NVM
 [[ -s $(brew --prefix nvm)/nvm.sh ]] && source $(brew --prefix nvm)/nvm.sh
 
