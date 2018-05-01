@@ -50,7 +50,7 @@ install_neovim() {
 }
 
 install_oracle() {
-  unzip -qu 'assets/instantclient-all-macos.x64-12.1.0.2.0.zip' -d ~/Library/Caches/Homebrew
+  unzip -qu 'assets/instantclient-all-macos.x64-12.2.0.1.0.zip' -d ~/Library/Caches/Homebrew
   brew_install 'instantclient-basic'
   brew_install 'instantclient-sdk'
   brew_install 'instantclient-sqlplus'
