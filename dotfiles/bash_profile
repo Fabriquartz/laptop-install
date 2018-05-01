@@ -29,8 +29,6 @@ fi
 [[ -s $(brew --prefix nvm)/nvm.sh ]] && source $(brew --prefix nvm)/nvm.sh
 
 # Load Rbenv
-if [ type rbenv &>/dev/null ]; then
-  eval "$(rbenv init -)"
-fi
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 [[ -f ~/.bash_profile.local ]] && source ~/.bash_profile.local
