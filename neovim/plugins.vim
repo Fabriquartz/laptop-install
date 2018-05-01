@@ -60,8 +60,6 @@ Plug 'sheerun/vim-json'
 Plug 'vim-ruby/vim-ruby'
 " Rails support
 Plug 'tpope/vim-rails'
-" Bundler support
-Plug 'tpope/vim-bundler'
 " Rspec support
 Plug 'thoughtbot/vim-rspec'
 "}}}
