@@ -152,12 +152,12 @@ echo_h2 "4.1 Configuring neovim"
 install_neovim
 
 if [ "$back_end" = true ]; then
-  echo_h2 "4.2 Back end Confuguration"
+  echo_h2 "4.2 Back end Configuration"
   source ./back-end.sh
 fi
 
 if [ "$front_end" = true ]; then
-  echo_h2 "4.2 Front end Confuguration"
+  echo_h2 "4.3 Front end Configuration"
   source ./front-end.sh
 fi
 
@@ -165,7 +165,7 @@ fi
 # setting up ssh
 # ==============================================================================
 
-echo_h2 "4.3 Configuring ssh"
+echo_h2 "4.4 Configuring ssh"
 
 if file_exists ~/.ssh/id_rsa; then
   fancy_echo "Key found, skipping generation"
@@ -180,7 +180,7 @@ fi
 # setting up git
 # ==============================================================================
 
-echo_h2 "4.4 Configuring git"
+echo_h2 "4.5 Configuring git"
 fancy_echo "Setting name & email"
 git config --global user.name "$full_name"
 git config --global user.email "$email_address"
@@ -189,12 +189,12 @@ git config --global user.email "$email_address"
 # configuring a few more things
 # ==============================================================================
 
-echo_h2 "4.5 Configuring redis"
+echo_h2 "4.6 Configuring redis"
 
 fancy_echo "Set redis as launchAgent"
 ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents >> out.log 2>&1
 
-echo_h2 "4.6 Configuring OSX"
+echo_h2 "4.7 Configuring OSX"
 
 fancy_echo "Enabling hidden files in Finder"
 defaults write com.apple.finder AppleShowAllFiles TRUE
