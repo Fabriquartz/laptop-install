@@ -5,6 +5,6 @@ developers at Fabriquartz.
 
 ```sh
 git clone https://github.com/Fabriquartz/laptop-install.git
-cd laptop-install
+cd laptop-install-master
 sh install.sh
 ```
