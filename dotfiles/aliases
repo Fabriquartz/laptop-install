@@ -16,6 +16,12 @@ alias j="jobs"
 alias e='$EDITOR'
 alias v='$VISUAL'
 
+# Docker
+alias dc="docker-compose"
+alias dcr="dc run"
+alias dcu="dc up"
+alias dcd="dc down"
+
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
   colorflag="--color"
