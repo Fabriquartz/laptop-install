@@ -49,16 +49,6 @@ install_neovim() {
   nvim +PlugInstall +qall >>/dev/null
 }
 
-install_oracle() {
-  unzip -qu 'assets/instantclient-all-macos.x64-12.2.0.1.0-2.zip' -d ~/Library/Caches/Homebrew
-  brew_install 'instantclient-basic'
-  brew_install 'instantclient-sdk'
-  brew_install 'instantclient-sqlplus'
-  oci_dir=$(brew --prefix)/lib
-  sudo /bin/bash -c 'echo "127.0.0.1 ${HOSTNAME}" >> /etc/hosts' >>out.log 2>&1
-  export OCI_DIR=$oci_dir
-}
-
 install_dotfile() {
   printf "Installing dotfile %s\n" "${1}"
   backup_if_different "./dotfiles/${1}" "$HOME/.${1}"
@@ -68,15 +58,6 @@ install_dotfile() {
 brew_tap() {
   printf "Tapping %s\n" "$1"
   brew tap "$1" >> out.log 2>&1
-}
-
-gem_install() {
-  if ! gem list | grep -q "$1"; then
-    printf "Installing %s\n" "$1"
-    gem install "$1" --no-doc >> out.log 2>&1
-  else
-    printf "Found %s\n" "$1"
-  fi
 }
 
 brew_install() {
