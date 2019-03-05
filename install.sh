@@ -69,14 +69,11 @@ echo_h2 "2.2 Installing missing cask packages"
 brew_cask_install 'google-chrome'         # duh
 brew_cask_install 'visual-studio-code'    # for non-vimmers
 brew_cask_install 'bettertouchtool'       # more customization
-brew_cask_install 'karabiner-elements'    # for easy key remapping (eg cpslck -> esc)
 brew_cask_install 'slack'                 # team communication
 brew_cask_install 'postman'               # rest client
 brew_cask_install 'alfred'                # enhanced launcher
 brew_cask_install 'harvest'               # time tracking & billing
 brew_cask_install 'docker'                # used for nginx/database
-brew_cask_install 'screenhero'            # easy screensharing
-brew_cask_install 'gas-mask'              # hosts-file management
 
 echo_h2 "2.3 Installing missing brew formulas"
 # tools
@@ -90,7 +87,6 @@ brew_install 'hub'                    # github cli
 brew_install 'git-standup'            # see commits last day
 brew_install 'the_silver_searcher'    # enhanced searcher with ag
 brew_install 'postgresql'             # database
-brew_install 'redis'                  # dependency for rails
 brew_install 'ctags'                  # indexer for vim
 brew_install 'libyaml'                # dependency for rails
 brew_install 'colordiff'              # fancy colors for diffs
@@ -189,12 +185,7 @@ git config --global user.email "$email_address"
 # configuring a few more things
 # ==============================================================================
 
-echo_h2 "4.6 Configuring redis"
-
-fancy_echo "Set redis as launchAgent"
-ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents >> out.log 2>&1
-
-echo_h2 "4.7 Configuring OSX"
+echo_h2 "4.6 Configuring OSX"
 
 fancy_echo "Enabling hidden files in Finder"
 defaults write com.apple.finder AppleShowAllFiles TRUE
