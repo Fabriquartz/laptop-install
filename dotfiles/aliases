@@ -23,7 +23,7 @@ alias dcu="dc up"
 alias dcd="dc down"
 
 # Backend deploy
-alias cap="pinata-ssh-forward > /dev/null && dcr -v ssh-agent:/ssh-agent cap"
+alias cap="ssh-add && pinata-ssh-forward > /dev/null && dcr -v ssh-agent:/ssh-agent cap"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
