@@ -167,7 +167,7 @@ if file_exists ~/.ssh/id_rsa; then
   fancy_echo "Key found, skipping generation"
 else
   fancy_echo "Generating key"
-  ssh-keygen -q -t rsa -b 4096 -C "$email_address" -N "" -f ~/.ssh/id_rsa
+  ssh-keygen -m PEM -q -t rsa -b 4096 -C "$email_address" -N "" -f ~/.ssh/id_rsa
   pbcopy < ~/.ssh/id_rsa.pub
   fancy_echo "Copied public key to clipboard, please add it to github: https://github.com/settings/keys"
 fi
